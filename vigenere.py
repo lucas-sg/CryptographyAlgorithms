@@ -2,6 +2,8 @@ import numpy as np
 from math import gcd
 from functools import reduce
 
+from frequency_analysis import freq_analysis
+
 
 ENG_ALPH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SPA_ALPH = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
@@ -26,17 +28,6 @@ def shift_char(c, offset):
     shifted_index = char_index(c) + offset    
     alph_index = shifted_index%len(SPA_ALPH)
     return SPA_ALPH[alph_index]
-
-
-def char_index(c):
-    n_index = ord('N') - ord('A')
-    
-    if c.upper() == 'Ñ':
-        return n_index + 1
-    
-    index = ord(c.upper()) - ord('A')
-    
-    return index + (1 if index > n_index else 0) # It's at Ñ's position or past it
 
 
 def calc_k_cols_for_key_length(s, key_length):
@@ -80,8 +71,7 @@ def offsets_between_repetitions(s, subs):
 
 
 def mcd(list):
-    x = reduce(gcd, list)
-    return x
+    return reduce(gcd, list)
 
 
 def flatten(list):
