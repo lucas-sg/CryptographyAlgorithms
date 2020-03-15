@@ -2,32 +2,25 @@ import numpy as np
 from math import gcd
 from functools import reduce
 
-from frequency_analysis import freq_analysis
+from shift_cipher import break_shift_cipher, shift, shift_char
 
 
 ENG_ALPH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SPA_ALPH = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
 
-def calc_keys(c):
-    key_lengths = calc_key_lengths(c)
-    keys = []
-    
-    for key_length in key_lengths:
-        k_cols = calc_k_cols_for_key_length(c, key_length)
-#        keys.append([freq_analysis(col) for col in k_cols])
-        
-    return [shift_with_key(c, key) for key in keys]
+def kasiski_decipher(s):
+    for keys in calc_keys(s):
+        m = [shift_char(s[i], -keys[i%len(keys)]) for i in range(len(s))]
+        print('\n' + str(keys) + ': ' + ''.join(m))
 
 
-def shift_with_key(s, k):    
-    return "".join([shift_char(s[i], k[i%len(k)]) for i in range(len(s))])
-
-
-def shift_char(c, offset):
-    shifted_index = char_index(c) + offset    
-    alph_index = shifted_index%len(SPA_ALPH)
-    return SPA_ALPH[alph_index]
+def calc_keys(s):
+    possible_keys = []
+    for key_length in calc_key_lengths(s):
+        k_cols = calc_k_cols_for_key_length(s, key_length)
+        possible_keys.append([break_shift_cipher(col) for col in k_cols])
+    return possible_keys
 
 
 def calc_k_cols_for_key_length(s, key_length):
@@ -80,7 +73,7 @@ def flatten(list):
 
 C1 = "PBVRQVICADSKAÑSDETSJPSIEDBGGMPSLRPWRÑPWYEDSDEÑDRDPCRCPQMNPWKUBZVSFNVRDMTIPWUEQVVCBOVNUEDIFQLONMWNUVRSEIKAZYEACEYEDSETFPHLBHGUÑESOMEHLBXVAEEPUÑELISEVEFWHUNMCLPQPMBRRNBPVIÑMTIBVVEÑIDANSJAMTJOKMDODSELPWIUFOZMQMVNFOHASESRJWRSFQCOTWVMBJGRPWVSUEXINQRSJEUEMGGRBDGNNILAGSJIDSVSUEEINTGRUEETFGGMPORDFOGTSSTOSEQOÑTGRRYVLPWJIFWXOTGGRPQRRJSKETXRNBLZETGGNEMUOTXJATORVJHRSFHVNUEJIBCHASEHEUEUOTIEFFGYATGGMPIKTBWUEÑENIEEU"
 C2 = "JGAZNWINHYLZDYVBBJLCQHTNKUDQXMOXJNOZMUSPNONYJMTEJHQHQFOOPUPBCYAÑJONCNNQHNMONDHKUTJMQCMOPNFAOXNTNLOAZMJDQYMOZCJRNBAOQTUIENFAIXTLXJGAZMJAXJVAZMUDNMYLNLJMUMUYHVUMHTÑIGDXDQUCLSJPIBCUSFNUGXXGEEXKAEJMESJÑENASLHLBAEYJROJXACQTCNMYPUCUNMJWOYNHZNKUOGAJDUJXENRYTENJSCNMONTYJNMJYFXFIGJMIBUUSNTFAPNFAFKUROJNYCTUYNBYSGJVACAUCGQWAZMJJHJHSNTPAPXMGNECOGJUTENCNGJGEGAJSPNULGDMAÑJDOFDNPUNNPNTGENMJSNTTOFDKIOXSSQNNFBATOCXMMNVÑEZNMEZBOSNTUSQBUDBTJRBBUYPQZIOQFTBANIBVMEDDYRUMUPNAULBOMAEDHVHNFOCJOSNMJ"
-key_lengths = calc_key_lengths(C1)
-print(key_lengths)
+# key_lengths = calc_key_lengths(C1)
+# print(key_lengths)
 # print(shift_with_key("PARAQUELACOSANOME", [0,1,4,18]))
-# print("PBVRQVICADSKAÑSDE")
+kasiski_decipher(C1)
