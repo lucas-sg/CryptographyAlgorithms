@@ -11,8 +11,8 @@ SPA_ALPH = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
 def kasiski_decipher(s):
     for keys in calc_keys(s):
-        m = [shift_char(s[i], -keys[i%len(keys)]) for i in range(len(s))]
-        print('\n' + str(keys) + ': ' + ''.join(m))
+        msg = [shift_char(s[i], -keys[i%len(keys)]) for i in range(len(s))]
+        print('\n' + str(keys) + ': ' + ''.join(msg))
 
 
 def calc_keys(s):
@@ -31,14 +31,11 @@ def calc_k_cols_for_key_length(s, key_length):
 
 def calc_key_lengths(s):
     lengths = []
-    
     for seq_len in np.arange(3, len(s)):
         seq_pairs = [seq_offset_pair(s, i, seq_len) for i in np.arange(0, len(s)-seq_len)]
         all_offsets = flatten([pair[1] for pair in seq_pairs if pair[1]])
-        
         if all_offsets:
-            lengths.append(mcd(all_offsets))
-        
+            lengths.append(mcd(all_offsets))       
     return lengths
         
 
@@ -52,14 +49,11 @@ def seq_offset_pair(s, i, seq_len):
 # And something such as:   wiulnsXXXuioop   should return an empty list
 def offsets_between_repetitions(s, subs):
     if s.count(subs) <= 1:
-        return []
-    
+        return [] 
     inter_strings = (s.split(subs))[1:]
     offsets = [len(inter_s) + len(subs) for inter_s in inter_strings]
-    
     if not s.endswith(subs):
         offsets.pop()
-
     return offsets
 
 

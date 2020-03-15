@@ -5,7 +5,7 @@ from math import isclose
 ENG_ALPH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 SPA_ALPH = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
-FREQS_SPA = [['A', 0.1253],
+FREQ_PAIRS_SPA = [['A', 0.1253],
              ['B', 0.0142],
              ['C', 0.0468],
              ['D', 0.0586],
@@ -32,31 +32,24 @@ FREQS_SPA = [['A', 0.1253],
              ['X', 0.0022],
              ['Y', 0.0090],
              ['Z', 0.0052]]
-I = sum(p**2 for p in [freq[1] for freq in FREQS_SPA])
+FREQS_SPA = [freq_pair[1] for freq_pair in FREQ_PAIRS_SPA]
+I = sum(p**2 for p in FREQS_SPA)
+
 
 def break_shift_cipher(s):
-    p = [freq[1] for freq in FREQS_SPA]
-    q = [freq[1] for freq in calc_freqs(s)]
+    p = FREQS_SPA
+    q = calc_freqs(s)
     alph_len = len(p)
     I_list = [sum([p[i]*q[(i + j)%alph_len] for i in range(alph_len)]) 
                                             for j in range(alph_len)]
-    I_list = [abs(I-i) for i in I_list]
-    return [I_list.index(k) for k in sorted(I_list)][0]
-
-
-def calc_offset_between(c1, c2):
-    offset = char_index(c1) - char_index(c2)
-    return offset + (len(SPA_ALPH) if offset < 0 else 0)
+    return I_list.index(min(I_list, key=lambda k:abs(I-k)))
 
 
 def calc_freqs(s):
     freq_pairs = [[c,0] for c in SPA_ALPH]
-    
     for c in s:
         freq_pairs[char_index(c)][1] += 1
-
-    # freq_pairs = sorted(freq_pairs, key=lambda pair: pair[1], reverse=True)
-    return [[p[0], float(p[1])/len(s)] for p in freq_pairs]
+    return [float(freq_pair[1])/len(s) for freq_pair in freq_pairs]
         
 
 def shift(s, offset):
@@ -71,16 +64,10 @@ def shift_char(c, offset):
 
 def char_index(c):
     n_index = ord('N') - ord('A')
-    
     if c.upper() == 'Ñ':
-        return n_index + 1
-    
+        return n_index + 1 
     index = ord(c.upper()) - ord('A') 
     return index + (1 if index > n_index else 0) # It's at Ñ's position or past it
-
-
-def flatten(list):
-    return [y for x in list for y in x]
 
 
 
