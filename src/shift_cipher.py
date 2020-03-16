@@ -2,8 +2,8 @@ from itertools import permutations
 from math import isclose
 
 
-ENG_ALPH = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-SPA_ALPH = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
+ENG_ALPH = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+SPA_ALPH = 'ABCDEFGHIJKLMNÑOPQRSTUVWXYZ'
 
 FREQ_PAIRS_SPA = [['A', 0.1253],
                   ['B', 0.0142],
@@ -69,7 +69,3 @@ def char_index(c):
     index = ord(c.upper()) - ord('A')
     # It's at Ñ's position or past it
     return index + (1 if index > n_index else 0)
-
-
-code = "VKXYKBKXGKSGWAKQQGYIUYGYWAKXKGQRKSZKJKYKKYIUSYKMAÑX"
-offset = break_shift_cipher(code)
